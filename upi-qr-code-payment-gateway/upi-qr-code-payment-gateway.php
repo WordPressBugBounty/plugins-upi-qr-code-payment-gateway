@@ -3,7 +3,7 @@
  * Plugin Name: UPI QR Code Payment Gateway
  * Plugin URI: http://dewtechnolab.com/project/
  * Description: It enables a WooCommerce site to accept payments through UPI apps like Google Pay, Paytm, AmazonPay, BHIM, PhonePe or any Banking UPI app. Avoid payment gateway charges.
- * Version: 1.4.0
+ * Version: 1.4.1
  * Author: Dew Technolab
  * Author URI: http://dewtechnolab.com/
  * License: GPLv3
@@ -47,7 +47,7 @@ final class DWU {
 	 *
 	 * @var string
 	 */
-	public $version = '1.4.7';
+	public $version = '1.4.1';
 
 	/**
 	 * Minimum version of WordPress required to run DWU.

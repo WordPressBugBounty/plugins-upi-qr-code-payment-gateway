@@ -1,10 +1,10 @@
 === UPI QR Code Payment Gateway ===
 
 Contributors: dewtechnolab, dew491212
-Tags: woocommerce, upi, upi payment, amazonpay, qrcode, gpay, bhim upi, paytm upi, india
+Tags: woocommerce, upi payment, qrcode, gpay, paytm upi
 Requires at least: 4.5.0
-Stable tag: 1.4.0
-Version: 1.4.0
+Stable tag: 1.4.1
+Version: 1.4.1
 Tested up to: 6.7.1
 WC requires at least: 4.0
 WC tested up to: 9.5.1
@@ -12,7 +12,7 @@ Requires PHP: 7.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 
-This Plugin enables WooCommerce shopowners to get direct and instant payments through UPI apps like Google Pay, Whatsapp, Amazon Pay Paytm, BHIM, PhonePe or any banking UPI app to save payment gateway charges in India.
+This Plugin enables WooCommerce shop owners to get direct and instant payments through UPI apps like GPay, PhonePe, Paytm or any banking UPI app.
 
 == Description ==
 
@@ -103,10 +103,14 @@ Post detailed information about the issue in the [support forum](https://wordpre
 
 If you like UPI QR Code Payment Gateway, please take a moment to [give a 5-star rating](https://wordpress.org/support/plugin/upi-qr-code-payment-gateway/reviews/?rate=5#new-post). It helps to keep development and support going strong. Thank you!
 
+= 1.4.1 =
+Release Date: December 28, 2024
+
+* Tested with WordPress v6.7.1 and WooCommerce v9.5.1
+
 = 1.4.0 =
 Release Date: March 7, 2024
 
-* Tested with WordPress v6.7.1 and WooCommerce v9.5.1
 * Tweak: PHP 8.3 Support.
 * Added: Support for WooCommerce Block-based checkout.
 * Added: Security check on submission.
@@ -132,10 +136,7 @@ Release Date: March 14, 2020
 
 == Upgrade Notice ==
 
-= 1.4.0 =
+= 1.4.1 =
+Release Date: December 28, 2024
 
 * Tested with WordPress v6.7.1 and WooCommerce v9.5.1
-* Tweak: PHP 8.3 Support.
-* Added: Support for WooCommerce Block-based checkout.
-* Added: Security check on submission.
-* Added: Screenshot upload field.
