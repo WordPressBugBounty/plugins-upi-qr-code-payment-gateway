@@ -13,7 +13,7 @@ final class UPI_WC_Payment_Gateway_Blocks_Support extends AbstractPaymentMethodT
 	 *
 	 * @var string
 	 */
-	protected $name = 'wc-upi';
+	protected $name = 'dew-wc-upi';
 
 	/**
 	 * Initializes the payment method type.

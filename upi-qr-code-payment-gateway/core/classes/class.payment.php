@@ -22,7 +22,7 @@ class UPI_WC_Payment_Gateway extends \WC_Payment_Gateway {
 	 *
 	 * @var string
 	 */
-	public $id = 'wc-upi';
+	public $id = 'dew-wc-upi';
 
 	protected $instructions;
 	protected $instructions_mobile;
@@ -1012,7 +1012,7 @@ class UPI_WC_Payment_Gateway extends \WC_Payment_Gateway {
 	 */
 	public function disable_gateway( $available_gateways ) {
 		if ( empty( $this->vpa ) || ( wp_is_mobile() && $this->hide_on_mobile === 'yes' ) ) {
-			unset( $available_gateways['wc-upi'] );
+			unset( $available_gateways['dew-wc-upi'] );
 		}
 
 		return $available_gateways;
