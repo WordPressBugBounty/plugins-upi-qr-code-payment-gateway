@@ -3,11 +3,11 @@
 Contributors: dewtechnolab, dew491212
 Tags: woocommerce, upi payment, qrcode, gpay, paytm upi
 Requires at least: 4.5.0
-Stable tag: 1.4.2
-Version: 1.4.2
-Tested up to: 6.7.1
+Stable tag: 1.4.3
+Version: 1.4.3
+Tested up to: 7.0.0
 WC requires at least: 4.0
-WC tested up to: 9.5.1
+WC tested up to: 10.8.1
 Requires PHP: 7.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
@@ -103,6 +103,11 @@ Post detailed information about the issue in the [support forum](https://wordpre
 
 If you like UPI QR Code Payment Gateway, please take a moment to [give a 5-star rating](https://wordpress.org/support/plugin/upi-qr-code-payment-gateway/reviews/?rate=5#new-post). It helps to keep development and support going strong. Thank you!
 
+= 1.4.3 =
+Release Date: Jun 07, 2026
+
+* Added compatibility with WordPress version 7.0.0.
+
 = 1.4.2 =
 Release Date: January 04, 2025
 
@@ -141,7 +146,7 @@ Release Date: March 14, 2020
 
 == Upgrade Notice ==
 
-= 1.4.2 =
-Release Date: January 04, 2025
+= 1.4.3 =
+Release Date: Jun 07, 2026
 
-* Fixed: Setting Page.
+* Added compatibility with WordPress version 7.0.0.
