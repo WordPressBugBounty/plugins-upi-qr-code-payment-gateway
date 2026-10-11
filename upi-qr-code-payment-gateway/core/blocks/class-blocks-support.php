@@ -1,4 +1,7 @@
 <?php
+// If this file is called directly, abort!!!
+defined( 'ABSPATH' ) || exit;
+
 use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType;
 
 /**
@@ -56,7 +59,7 @@ final class UPI_WC_Payment_Gateway_Blocks_Support extends AbstractPaymentMethodT
 		);
 
 		if ( function_exists( 'wp_set_script_translations' ) ) {
-			wp_set_script_translations( 'dwu-payment-blocks', 'dew-upi-qr-code', DWU_PATH . 'languages/' );
+			wp_set_script_translations( 'dwu-payment-blocks', 'upi-qr-code-payment-gateway', DWU_PATH . 'languages/' );
 		}
 
 		return [ 'dwu-payment-blocks' ];
@@ -81,16 +84,16 @@ final class UPI_WC_Payment_Gateway_Blocks_Support extends AbstractPaymentMethodT
 			$handles
 		);
 
-		$placeholder = ( $this->get_setting( 'upi_address' ) === 'show_handle' ) ? 'mobilenumber' : 'mobilenumber@oksbi';
+		$placeholder = ( $this->get_setting( 'upi_address', 'show_handle' ) === 'show_handle' ) ? 'mobilenumber' : 'mobilenumber@oksbi';
 		$placeholder = apply_filters( 'dwu_upi_address_placeholder', $placeholder );
 
 		return [
 			'title'       => $this->get_setting( 'title' ),
 			'description' => $this->get_setting( 'description' ),
-			'upi_address' => $this->get_setting( 'upi_address' ),
-			'require_upi' => $this->get_setting( 'require_upi' ),
+			'upi_address' => $this->get_setting( 'upi_address', 'show_handle' ),
+			'require_upi' => $this->get_setting( 'require_upi', 'yes' ),
 			'supports'    => $this->get_supported_features(),
-			'button_text' => apply_filters( 'dwu_order_button_text', __( 'Proceed to Payment', 'dew-upi-qr-code' ) ),
+			'button_text' => apply_filters( 'dwu_order_button_text', __( 'Proceed to Payment', 'upi-qr-code-payment-gateway' ) ),
 			'placeholder' => $placeholder,
 			'handles'     => $handles,
 		];

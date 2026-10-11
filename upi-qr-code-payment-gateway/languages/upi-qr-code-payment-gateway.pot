@@ -1,0 +1,673 @@
+# Copyright (C) 2026 Dew Technolab
+# This file is distributed under the same license as the UPI QR Code Payment Gateway plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: UPI QR Code Payment Gateway 1.5.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/upi-qr-code-payment-gateway\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-10-11T19:14:05+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: .claude/tools/make-pot.php\n"
+"X-Domain: upi-qr-code-payment-gateway\n"
+
+#: core/blocks/class-blocks-support.php:96 core/classes/class.payment.php:59
+msgid "Proceed to Payment"
+msgstr ""
+
+#: core/classes/class.order-data.php:107
+msgid "The screenshot could not be saved. Please contact us to confirm your payment."
+msgstr ""
+
+#: core/classes/class.order-data.php:191
+msgid "You are not allowed to view payment screenshots."
+msgstr ""
+
+#: core/classes/class.order-data.php:200
+msgid "Screenshot not found."
+msgstr ""
+
+#: core/classes/class.order-data.php:262
+msgid "UPI ID"
+msgstr ""
+
+#: core/classes/class.payment.php:57
+msgid "UPI QR Code"
+msgstr ""
+
+#: core/classes/class.payment.php:58
+msgid "Allows customers to use UPI mobile app like Paytm, Google Pay, BHIM, PhonePe to pay to your bank account directly using UPI."
+msgstr ""
+
+#: core/classes/class.payment.php:58
+msgid "Merchant or Administrator of this site needs to manually check the payment and mark it as paid on the Order edit page as automatic payment verification is not available within this payment method."
+msgstr ""
+
+#: core/classes/class.payment.php:177
+msgid "Gateway disabled"
+msgstr ""
+
+#: core/classes/class.payment.php:177
+msgid "This plugin does not support your store currency. UPI Payment only supports Indian Currency. Contact developer for support."
+msgstr ""
+
+#: core/classes/class.payment.php:190 core/classes/class.payment.php:396
+msgid "Enable / Disable:"
+msgstr ""
+
+#: core/classes/class.payment.php:192
+msgid "Enable UPI QR Code Payment Method"
+msgstr ""
+
+#: core/classes/class.payment.php:193
+msgid "Enable this if you want to collect payment via UPI QR Codes."
+msgstr ""
+
+#: core/classes/class.payment.php:198
+msgid "Gateway Title:"
+msgstr ""
+
+#: core/classes/class.payment.php:200
+msgid "This controls the title for the payment method the customer sees during checkout."
+msgstr ""
+
+#: core/classes/class.payment.php:201
+msgid "Pay with UPI QR Code"
+msgstr ""
+
+#: core/classes/class.payment.php:205
+msgid "Description:"
+msgstr ""
+
+#: core/classes/class.payment.php:207
+msgid "Payment method description that the customer will see on your checkout."
+msgstr ""
+
+#: core/classes/class.payment.php:208
+msgid "It uses UPI apps like BHIM, Paytm, Google Pay, PhonePe or any Banking UPI app to make payment."
+msgstr ""
+
+#: core/classes/class.payment.php:212
+msgid "Payee UPI Address (VPA):"
+msgstr ""
+
+#: core/classes/class.payment.php:214
+msgid "If you want to collect UPI Address from customers on checkout page, set it here. You can verify the payment against this UPI ID."
+msgstr ""
+
+#: core/classes/class.payment.php:218 core/classes/class.payment.php:330
+#: core/classes/class.payment.php:342
+msgid "Hide Field"
+msgstr ""
+
+#: core/classes/class.payment.php:219 core/classes/class.payment.php:331
+msgid "Show Input Field"
+msgstr ""
+
+#: core/classes/class.payment.php:220
+msgid "Show Input Field & Handle"
+msgstr ""
+
+#: core/classes/class.payment.php:224
+msgid "Require UPI ID:"
+msgstr ""
+
+#: core/classes/class.payment.php:226
+msgid "If you want to make UPI Address field required on checkout page, set it here."
+msgstr ""
+
+#: core/classes/class.payment.php:230
+msgid "Require Field"
+msgstr ""
+
+#: core/classes/class.payment.php:231
+msgid "Don't Require Field"
+msgstr ""
+
+#: core/classes/class.payment.php:235
+msgid "Payment Complete Status:"
+msgstr ""
+
+#: core/classes/class.payment.php:237
+msgid "Order status set when the customer submits their payment details. Recommended: On Hold."
+msgstr ""
+
+#: core/classes/class.payment.php:237
+msgid "Submitted Transaction IDs are not verified automatically. Processing or Completed releases downloads and starts fulfilment for payments nobody has checked."
+msgstr ""
+
+#: core/classes/class.payment.php:243
+msgid "Pending Payment"
+msgstr ""
+
+#: core/classes/class.payment.php:244
+msgid "On Hold"
+msgstr ""
+
+#: core/classes/class.payment.php:245
+msgid "Processing"
+msgstr ""
+
+#: core/classes/class.payment.php:246
+msgid "Completed"
+msgstr ""
+
+#: core/classes/class.payment.php:251
+msgid "Unpaid Order Timeout (hours):"
+msgstr ""
+
+#: core/classes/class.payment.php:253
+msgid "How long an unpaid UPI order is kept before WooCommerce cancels it, so customers who pay and come back later can still submit their Transaction ID. Orders whose payment details were submitted are never cancelled automatically. Set 0 to use the WooCommerce \"Hold stock\" time."
+msgstr ""
+
+#: core/classes/class.payment.php:262
+msgid "Thank You Message:"
+msgstr ""
+
+#: core/classes/class.payment.php:264
+msgid "This displays a message to customer after a successful payment is made."
+msgstr ""
+
+#: core/classes/class.payment.php:265
+msgid "Thank you for your order. We have received your payment details and will confirm your order as soon as we have verified the payment. Please check your email inbox for details."
+msgstr ""
+
+#: core/classes/class.payment.php:269
+msgid "Mobile Visibility:"
+msgstr ""
+
+#: core/classes/class.payment.php:271
+msgid "Disable QR Code Payment Gateway on Mobile Devices"
+msgstr ""
+
+#: core/classes/class.payment.php:272
+msgid "Enable this if you want to disable QR Code Payment Gateway on Mobile Devices."
+msgstr ""
+
+#: core/classes/class.payment.php:277
+msgid "Payment Popup Settings"
+msgstr ""
+
+#: core/classes/class.payment.php:279
+msgid "Customize various settings of the Payment Popup here."
+msgstr ""
+
+#: core/classes/class.payment.php:282
+msgid "Your Store or Shop Name:"
+msgstr ""
+
+#: core/classes/class.payment.php:284
+msgid "Enter Your Store or Shop name. If you are a person, you can enter your name."
+msgstr ""
+
+#: core/classes/class.payment.php:289
+msgid "Merchant UPI VPA ID:"
+msgstr ""
+
+#: core/classes/class.payment.php:291
+msgid "Enter Your Merchant UPI VPA (e.g. 12345678@icici) at which you want to collect payments."
+msgstr ""
+
+#: core/classes/class.payment.php:291
+msgid "Use only Merchant UPI ID. General/Normal User UPI VPA will not work."
+msgstr ""
+
+#: core/classes/class.payment.php:296
+msgid "Pay Now Button Text:"
+msgstr ""
+
+#: core/classes/class.payment.php:298
+msgid "Enter the text to show as the payment button."
+msgstr ""
+
+#: core/classes/class.payment.php:299
+msgid "Scan & Pay Now"
+msgstr ""
+
+#: core/classes/class.payment.php:303
+msgid "Merchant Category Code:"
+msgstr ""
+
+#: core/classes/class.payment.php:305
+msgid "You can refer to these links to find out your MCC."
+msgstr ""
+
+#: core/classes/class.payment.php:305
+msgid "If you do not have one, use 0000."
+msgstr ""
+
+#: core/classes/class.payment.php:310
+msgid "Popup Theme:"
+msgstr ""
+
+#: core/classes/class.payment.php:312
+msgid "Select the QR Code Popup theme here."
+msgstr ""
+
+#: core/classes/class.payment.php:318
+msgid "Light Theme"
+msgstr ""
+
+#: core/classes/class.payment.php:319
+msgid "Dark Theme"
+msgstr ""
+
+#: core/classes/class.payment.php:324
+msgid "UPI Transaction ID:"
+msgstr ""
+
+#: core/classes/class.payment.php:326
+msgid "If you want to collect UPI Transaction ID from customers on payment page, set it here. Requiring it makes payments easier to match in your bank or UPI app, but the ID is not verified automatically: always check it before completing the order."
+msgstr ""
+
+#: core/classes/class.payment.php:332 core/classes/class.payment.php:344
+msgid "Show & Require Input Field"
+msgstr ""
+
+#: core/classes/class.payment.php:336
+msgid "UPI Screenshot / Image:"
+msgstr ""
+
+#: core/classes/class.payment.php:338
+msgid "If you want to collect transaction screenshot from customers on payment page, set it here."
+msgstr ""
+
+#: core/classes/class.payment.php:343
+msgid "Show Upload Field"
+msgstr ""
+
+#: core/classes/class.payment.php:349
+msgid "Download Button:"
+msgstr ""
+
+#: core/classes/class.payment.php:351
+msgid "Show / Hide download QR Code Button"
+msgstr ""
+
+#: core/classes/class.payment.php:352
+msgid "Enable this if you want to show download QR Code Button. Buyers can pay using this QR Code by uploading it from gallery to any UPI supported apps."
+msgstr ""
+
+#: core/classes/class.payment.php:357
+msgid "Mobile QR Code:"
+msgstr ""
+
+#: core/classes/class.payment.php:359
+msgid "Show / Hide QR Code on Mobile Devices"
+msgstr ""
+
+#: core/classes/class.payment.php:360
+msgid "Enable this if you want to show UPI QR Code on mobile devices."
+msgstr ""
+
+#: core/classes/class.payment.php:365
+msgid "Payment Popup Content"
+msgstr ""
+
+#: core/classes/class.payment.php:367
+msgid "Customize various texts of the Payment Popup here."
+msgstr ""
+
+#: core/classes/class.payment.php:370
+msgid "Instructions:"
+msgstr ""
+
+#: core/classes/class.payment.php:372
+msgid "Instructions that will be added to the order pay popup on desktop devices."
+msgstr ""
+
+#: core/classes/class.payment.php:373 core/classes/class.payment.php:380
+msgid "Please scan the QR code with any UPI app to pay for your order. After payment, enter the UPI Reference ID or Transaction Number (e.g. 401422121258) on the next screen. We'll manually verify your payment using the provided information."
+msgstr ""
+
+#: core/classes/class.payment.php:377
+msgid "Mobile Instructions:"
+msgstr ""
+
+#: core/classes/class.payment.php:379
+msgid "Instructions that will be added to the order pay popup on mobile devices."
+msgstr ""
+
+#: core/classes/class.payment.php:384
+msgid "Confirm Message:"
+msgstr ""
+
+#: core/classes/class.payment.php:386
+msgid "This displays a message to customer as payment processing text."
+msgstr ""
+
+#: core/classes/class.payment.php:387
+msgid "Please ensure that the amount has been deducted from your account before clicking \"Confirm\". We will manually verify your transaction once submitted."
+msgstr ""
+
+#: core/classes/class.payment.php:391
+msgid "Configure Email"
+msgstr ""
+
+#: core/classes/class.payment.php:393
+msgid "Configure the Payment Pending email settings here."
+msgstr ""
+
+#: core/classes/class.payment.php:398
+msgid "Enable Email Notification"
+msgstr ""
+
+#: core/classes/class.payment.php:399
+msgid "Enable this option if you want to send payment link to the customer via email after placing the successful order."
+msgstr ""
+
+#: core/classes/class.payment.php:404
+msgid "Email Subject:"
+msgstr ""
+
+#. translators: %s: List of placeholders
+#: core/classes/class.payment.php:408 core/classes/class.payment.php:416
+#, php-format
+msgid "Available placeholders: %s"
+msgstr ""
+
+#: core/classes/class.payment.php:409
+msgid "[{site_title}]: Payment pending #{order_number}"
+msgstr ""
+
+#: core/classes/class.payment.php:412
+msgid "Email Heading:"
+msgstr ""
+
+#: core/classes/class.payment.php:417
+msgid "Thank you for your order"
+msgstr ""
+
+#: core/classes/class.payment.php:420
+msgid "Email Body Text:"
+msgstr ""
+
+#: core/classes/class.payment.php:422
+msgid "This text will be attached to the On Hold email template sent to customer. Use {upi_pay_link} to add the link of payment page."
+msgstr ""
+
+#: core/classes/class.payment.php:423
+msgid "Please complete the payment via UPI by going to this link: {upi_pay_link} (ignore if already done)."
+msgstr ""
+
+#: core/classes/class.payment.php:479
+msgid "UPI Address"
+msgstr ""
+
+#: core/classes/class.payment.php:483
+msgid "-- Select --"
+msgstr ""
+
+#: core/classes/class.payment.php:528
+msgid "<strong>UPI Address</strong> is a required field."
+msgstr ""
+
+#: core/classes/class.payment.php:534
+msgid "<strong>UPI Handle</strong> is a required field."
+msgstr ""
+
+#: core/classes/class.payment.php:539
+msgid "Please select a <strong>valid UPI Handle</strong>!"
+msgstr ""
+
+#: core/classes/class.payment.php:550
+msgid "Please enter a <strong>valid UPI Address</strong>!"
+msgstr ""
+
+#: core/classes/class.payment.php:641
+msgid "Awaiting UPI Payment!"
+msgstr ""
+
+#. translators: %s: Customer UPI ID
+#: core/classes/class.payment.php:652
+#, php-format
+msgid "UPI ID: %s"
+msgstr ""
+
+#: core/classes/class.payment.php:720
+msgid "Please wait and don't press back or refresh this page while we are processing your payment."
+msgstr ""
+
+#: core/classes/class.payment.php:723
+msgid "Waiting for payment..."
+msgstr ""
+
+#: core/classes/class.payment.php:726
+msgid "Cancel"
+msgstr ""
+
+#: core/classes/class.payment.php:730
+msgid "Choose another payment method"
+msgstr ""
+
+#: core/classes/class.payment.php:739
+msgid "Order ID: "
+msgstr ""
+
+#: core/classes/class.payment.php:748
+msgid "Click to Copy"
+msgstr ""
+
+#: core/classes/class.payment.php:750
+msgid "Download QR Code"
+msgstr ""
+
+#: core/classes/class.payment.php:756
+msgid "Pay with installed app"
+msgstr ""
+
+#: core/classes/class.payment.php:758
+msgid "Pay with installed app, or use others"
+msgstr ""
+
+#: core/classes/class.payment.php:765
+msgid "Google Pay"
+msgstr ""
+
+#: core/classes/class.payment.php:771
+msgid "PhonePe"
+msgstr ""
+
+#: core/classes/class.payment.php:777
+msgid "Paytm"
+msgstr ""
+
+#: core/classes/class.payment.php:784
+msgid "Others"
+msgstr ""
+
+#: core/classes/class.payment.php:816
+msgid "Enter 12-digit Transaction / UTR / Reference ID:"
+msgstr ""
+
+#: core/classes/class.payment.php:827
+msgid "Upload Screenshot:"
+msgstr ""
+
+#: core/classes/class.payment.php:871
+msgid "Order can't be found against this Order ID. If the money debited from your account, please Contact with Site Administrator for further action."
+msgstr ""
+
+#: core/classes/class.payment.php:876
+msgid "Security check failed!"
+msgstr ""
+
+#: core/classes/class.payment.php:880
+msgid "This order was not placed using UPI payment method."
+msgstr ""
+
+#. translators: %s: Order number
+#: core/classes/class.payment.php:893
+#, php-format
+msgid "This order was cancelled because the payment details were not submitted in time. If money was debited from your account, please contact us with your UPI Transaction ID (UTR) and order number #%s."
+msgstr ""
+
+#: core/classes/class.payment.php:895
+msgid "This order does not need a payment."
+msgstr ""
+
+#: core/classes/class.payment.php:904
+msgid "Transaction ID is required!"
+msgstr ""
+
+#: core/classes/class.payment.php:906
+msgid "Transaction ID should be of 12 digits!"
+msgstr ""
+
+#: core/classes/class.payment.php:920
+msgid "Transaction ID was already used in the previous order."
+msgstr ""
+
+#: core/classes/class.payment.php:929
+msgid "Payment screenshot is required!"
+msgstr ""
+
+#. translators: %s: Maximum file size
+#: core/classes/class.payment.php:938
+#, php-format
+msgid "Screenshot must be an image smaller than %s."
+msgstr ""
+
+#: core/classes/class.payment.php:957
+msgid "Screenshot uploaded successfully."
+msgstr ""
+
+#: core/classes/class.payment.php:957
+msgid "View"
+msgstr ""
+
+#: core/classes/class.payment.php:974
+msgid "Payment primarily completed. Needs shop owner's verification."
+msgstr ""
+
+#: core/classes/class.payment.php:1124
+msgid "UPI Payment"
+msgstr ""
+
+#: core/classes/class.payment.php:1162
+msgid "Paid via:"
+msgstr ""
+
+#: core/classes/class.payment.php:1162
+msgid "From:"
+msgstr ""
+
+#: core/classes/class.payment.php:1165
+msgid "Submitted, verify payment"
+msgstr ""
+
+#: core/classes/class.payment.php:1168
+msgid "UTR:"
+msgstr ""
+
+#: core/classes/class.payment.php:1179
+msgid "View screenshot"
+msgstr ""
+
+#: core/classes/class.payment.php:1183
+msgid "Initiated:"
+msgstr ""
+
+#. translators: WordPress Version
+#: upi-qr-code-payment-gateway.php:127
+#, php-format
+msgid "You are using the outdated WordPress, please update it to version %s or higher."
+msgstr ""
+
+#. translators: PHP Version
+#: upi-qr-code-payment-gateway.php:133
+#, php-format
+msgid "UPI QR Code Payment Gateway requires PHP version %s or above. Please update PHP to run this plugin."
+msgstr ""
+
+#: upi-qr-code-payment-gateway.php:332
+msgid "UPI QR Code Payment Gateway:"
+msgstr ""
+
+#. translators: %s: order status name, e.g. Processing
+#: upi-qr-code-payment-gateway.php:335
+#, php-format
+msgid "orders are set to %s as soon as a customer submits a UPI Transaction ID. These IDs are not checked automatically, so anyone can enter any 12-digit number and receive downloads, or have the order fulfilled, without paying. We recommend \"On Hold\" and confirming each payment in your bank or UPI app."
+msgstr ""
+
+#: upi-qr-code-payment-gateway.php:337
+msgid "Change setting"
+msgstr ""
+
+#: upi-qr-code-payment-gateway.php:365
+msgid "Support"
+msgstr ""
+
+#: upi-qr-code-payment-gateway.php:366
+msgid "FAQ"
+msgstr ""
+
+#: upi-qr-code-payment-gateway.php:380
+msgid "Settings"
+msgstr ""
+
+#. translators: 1: Plugin name, 2: Plugin version, 3: Settings page URL
+#: upi-qr-code-payment-gateway.php:449
+#, php-format
+msgid "Thanks for installing %1$s v%2$s plugin. Click <a href=\"%3$s\">here</a> to configure plugin settings."
+msgstr ""
+
+#: upi-qr-code-payment-gateway.php:475
+msgid "Hey, I noticed you&rsquo;ve been using UPI QR Code Payment Gateway for more than a week &ndash; that&rsquo;s awesome! Could you please do me a BIG favor and leave a <strong>review</strong> on WordPress.org? Just to help me spread the word and boost my motivation."
+msgstr ""
+
+#: upi-qr-code-payment-gateway.php:476
+msgid "Ok, you deserve it"
+msgstr ""
+
+#: upi-qr-code-payment-gateway.php:477
+msgid "I already did"
+msgstr ""
+
+#: upi-qr-code-payment-gateway.php:478
+msgid "Nope, maybe later"
+msgstr ""
+
+#: upi-qr-code-payment-gateway.php:523
+msgid "Exciting News! You no longer have to manually check the payment status of your UPI/QR payments. Knit Pay - UPI plugin can check the payment status automatically for you."
+msgstr ""
+
+#: upi-qr-code-payment-gateway.php:525
+msgid "Get it Now"
+msgstr ""
+
+#: upi-qr-code-payment-gateway.php:526
+msgid "Remind Later"
+msgstr ""
+
+#: upi-qr-code-payment-gateway.php:527
+msgid "Not interested"
+msgstr ""
+
+#. Plugin Name of the plugin
+#: upi-qr-code-payment-gateway.php
+msgid "UPI QR Code Payment Gateway"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: upi-qr-code-payment-gateway.php
+msgid "http://dewtechnolab.com/project/"
+msgstr ""
+
+#. Description of the plugin
+#: upi-qr-code-payment-gateway.php
+msgid "It enables a WooCommerce site to accept payments through UPI apps like Google Pay, Paytm, AmazonPay, BHIM, PhonePe or any Banking UPI app. Avoid payment gateway charges."
+msgstr ""
+
+#. Author of the plugin
+#: upi-qr-code-payment-gateway.php
+msgid "Dew Technolab"
+msgstr ""
+
+#. Author URI of the plugin
+#: upi-qr-code-payment-gateway.php
+msgid "http://dewtechnolab.com/"
+msgstr ""

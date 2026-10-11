@@ -3,14 +3,17 @@
  * Plugin Name: UPI QR Code Payment Gateway
  * Plugin URI: http://dewtechnolab.com/project/
  * Description: It enables a WooCommerce site to accept payments through UPI apps like Google Pay, Paytm, AmazonPay, BHIM, PhonePe or any Banking UPI app. Avoid payment gateway charges.
- * Version: 1.4.3
+ * Version: 1.5.0
+ * Requires at least: 4.6
+ * Requires PHP: 7.4
  * Author: Dew Technolab
  * Author URI: http://dewtechnolab.com/
  * License: GPLv3
- * Text Domain: dew-upi-qr-code
+ * License URI: http://www.gnu.org/licenses/gpl.html
+ * Text Domain: upi-qr-code-payment-gateway
  * Domain Path: /languages
  * WC requires at least: 4.0
- * WC tested up to: 10.8.1
+ * WC tested up to: 11.2
  * Requires Plugins: woocommerce
  *
  * UPI QR Code Payment Gateway is free software: you can redistribute it and/or modify
@@ -47,7 +50,7 @@ final class DWU {
 	 *
 	 * @var string
 	 */
-	public $version = '1.4.2';
+	public $version = '1.5.0';
 
 	/**
 	 * Minimum version of WordPress required to run DWU.
@@ -61,7 +64,7 @@ final class DWU {
 	 *
 	 * @var string
 	 */
-	private $php_version = '5.6';
+	private $php_version = '7.4';
 
 	/**
 	 * Hold install error messages.
@@ -121,13 +124,13 @@ final class DWU {
 		// Check WordPress version.
 		if ( version_compare( get_bloginfo( 'version' ), $this->wordpress_version, '<' ) ) {
 			/* translators: WordPress Version */
-			$this->messages[] = sprintf( esc_html__( 'You are using the outdated WordPress, please update it to version %s or higher.', 'dew-upi-qr-code' ), $this->wordpress_version );
+			$this->messages[] = sprintf( esc_html__( 'You are using the outdated WordPress, please update it to version %s or higher.', 'upi-qr-code-payment-gateway' ), $this->wordpress_version );
 		}
 
 		// Check PHP version.
 		if ( version_compare( phpversion(), $this->php_version, '<' ) ) {
 			/* translators: PHP Version */
-			$this->messages[] = sprintf( esc_html__( 'UPI QR Code Payment Gateway requires PHP version %s or above. Please update PHP to run this plugin.', 'dew-upi-qr-code' ), $this->php_version );
+			$this->messages[] = sprintf( esc_html__( 'UPI QR Code Payment Gateway requires PHP version %s or above. Please update PHP to run this plugin.', 'upi-qr-code-payment-gateway' ), $this->php_version );
 		}
 
 		if ( empty( $this->messages ) ) {
@@ -158,7 +161,7 @@ final class DWU {
 		?>
 		<div class="notice dwu-notice notice-error">
 			<p>
-                <?php echo join( '<br>', $this->messages ); // phpcs:ignore ?>
+				<?php echo wp_kses( join( '<br>', $this->messages ), [ 'br' => [] ] ); ?>
 			</p>
 		</div>
 		<?php
@@ -198,8 +201,13 @@ final class DWU {
 				delete_option( 'dwu_plugin_no_thanks_donate_notice' );
 				delete_option( 'dwu_plugin_dismissed_time' );
 				delete_option( 'dwu_plugin_dismissed_time_donate' );
+				delete_option( 'dwu_plugin_dismiss_knit_pay_upi_notice' );
 			}
 		);
+
+		// Private payment screenshots and privacy tools (needed even when the gateway isn't loaded).
+		require_once DWU_PATH . 'core/classes/class.order-data.php';
+		DWU_Order_Data::init();
 
 		// Initialize the action and filter hooks.
 		$this->init_actions();
@@ -209,8 +217,8 @@ final class DWU {
 	 * Initialize WordPress action and filter hooks.
 	 */
 	private function init_actions() {
-		// Make sure it is loaded before setup_modules and load_modules.
-		add_action( 'plugins_loaded', [ $this, 'localization_setup' ], 9 );
+		// Load translations (on init, as WordPress 6.7+ requires).
+		add_action( 'init', [ $this, 'localization_setup' ] );
 
 		// Add plugin action links.
 		add_filter( 'plugin_row_meta', [ $this, 'plugin_row_meta' ], 10, 2 );
@@ -226,16 +234,119 @@ final class DWU {
 		add_action( 'plugins_loaded', [ $this, 'load_gateway' ] );
 		add_action( 'woocommerce_blocks_loaded', [ $this, 'block_support' ] );
 
+		// Give UPI orders longer before WooCommerce cancels them as unpaid (runs in cron, where gateways aren't loaded).
+		add_filter( 'woocommerce_cancel_unpaid_order', [ $this, 'maybe_keep_unpaid_order' ], 10, 2 );
+
+		// The gateway registers the "UPI Payment" orders column, but WooCommerce doesn't load gateways on the order screens.
+		add_action( 'current_screen', [ $this, 'load_gateway_on_order_screens' ] );
+
 		// Load admin notices.
 		add_action( 'admin_notices', [ $this, 'admin_notice' ] );
+		add_action( 'admin_notices', [ $this, 'payment_status_notice' ] );
 		add_action( 'admin_init', [ $this, 'dismiss_notice' ] );
 	}
 
 	/**
-	 * Initialize plugin for localization.
+	 * Load the payment gateways on the order list screens (HPOS and legacy), before the list table is built,
+	 * so the gateway's "UPI Payment" column hooks are registered.
+	 *
+	 * @param WP_Screen $screen Current admin screen.
+	 */
+	public function load_gateway_on_order_screens( $screen ) {
+		if ( $screen && in_array( $screen->id, [ 'woocommerce_page_wc-orders', 'edit-shop_order' ], true ) && function_exists( 'WC' ) ) {
+			WC()->payment_gateways();
+		}
+	}
+
+	/**
+	 * Decide whether WooCommerce may auto-cancel an unpaid UPI order.
+	 *
+	 * Customers often pay in their UPI app and come back later to enter the Transaction ID, so
+	 * UPI orders get their own, longer window than WooCommerce's "Hold stock" time. Orders whose
+	 * payment details were already submitted are never cancelled automatically: the merchant
+	 * checks them.
+	 *
+	 * @param bool     $should_cancel Whether WooCommerce would cancel the order.
+	 * @param WC_Order $order         The unpaid (pending) order.
+	 * @return bool
+	 */
+	public function maybe_keep_unpaid_order( $should_cancel, $order ) {
+		if ( ! $should_cancel || ! is_a( $order, 'WC_Order' ) || 'dew-wc-upi' !== $order->get_payment_method() ) {
+			return $should_cancel;
+		}
+
+		if ( 'yes' === $order->get_meta( '_dwu_order_paid', true ) ) {
+			return false;
+		}
+
+		$settings = get_option( 'woocommerce_dew-wc-upi_settings', [] );
+		$hours    = isset( $settings['unpaid_timeout'] ) && '' !== $settings['unpaid_timeout'] ? (float) $settings['unpaid_timeout'] : 24;
+
+		/**
+		 * Filters how many hours an unpaid UPI order is kept before WooCommerce may cancel it.
+		 * 0 falls back to WooCommerce's "Hold stock" time.
+		 *
+		 * @since 1.5.0
+		 *
+		 * @param float    $hours Hours to keep the order. Default from the gateway settings (24).
+		 * @param WC_Order $order The unpaid order.
+		 */
+		$hours   = (float) apply_filters( 'dwu_unpaid_order_timeout_hours', $hours, $order );
+		$created = $order->get_date_created();
+
+		if ( $hours > 0 && $created && $created->getTimestamp() > time() - (int) ( $hours * HOUR_IN_SECONDS ) ) {
+			// Too early: WooCommerce checks again on its next run.
+			return false;
+		}
+
+		return $should_cancel;
+	}
+
+	/**
+	 * Warn on WooCommerce screens when submitted, unverified payment details move orders to
+	 * Processing or Completed (which releases downloads and starts fulfilment).
+	 */
+	public function payment_status_notice() {
+		if ( ! current_user_can( 'manage_woocommerce' ) || ! function_exists( 'get_current_screen' ) ) {
+			return;
+		}
+
+		$screen = get_current_screen();
+		if ( ! $screen || ! in_array( $screen->id, [ 'dashboard', 'plugins', 'woocommerce_page_wc-settings', 'woocommerce_page_wc-orders', 'edit-shop_order' ], true ) ) {
+			return;
+		}
+
+		$settings = get_option( 'woocommerce_dew-wc-upi_settings', [] );
+		$status   = isset( $settings['payment_status'] ) ? $settings['payment_status'] : 'on-hold';
+		$enabled  = ! isset( $settings['enabled'] ) || 'yes' === $settings['enabled'];
+
+		if ( ! $enabled || ! in_array( $status, [ 'processing', 'completed' ], true ) ) {
+			return;
+		}
+
+		$statuses = wc_get_order_statuses();
+		$label    = isset( $statuses[ 'wc-' . $status ] ) ? $statuses[ 'wc-' . $status ] : $status;
+		?>
+		<div class="notice notice-warning">
+			<p>
+				<strong><?php esc_html_e( 'UPI QR Code Payment Gateway:', 'upi-qr-code-payment-gateway' ); ?></strong>
+				<?php
+				/* translators: %s: order status name, e.g. Processing */
+				echo esc_html( sprintf( __( 'orders are set to %s as soon as a customer submits a UPI Transaction ID. These IDs are not checked automatically, so anyone can enter any 12-digit number and receive downloads, or have the order fulfilled, without paying. We recommend "On Hold" and confirming each payment in your bank or UPI app.', 'upi-qr-code-payment-gateway' ), $label ) );
+				?>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=wc-settings&tab=checkout&section=dew-wc-upi' ) ); ?>"><?php esc_html_e( 'Change setting', 'upi-qr-code-payment-gateway' ); ?></a>
+			</p>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Load translations from the plugin's languages folder, e.g. files made from languages/upi-qr-code-payment-gateway.pot
+	 * with Loco Translate or Poedit. WordPress.org language packs keep working as before.
 	 */
 	public function localization_setup() {
-		load_plugin_textdomain( 'dew-upi-qr-code', false, dirname( DWU_BASENAME ) . '/languages' ); 
+		// phpcs:ignore PluginCheck.CodeAnalysis.DiscouragedFunctions.load_plugin_textdomainFound -- also loads translations shipped or saved in /languages, not only WordPress.org language packs.
+		load_plugin_textdomain( 'upi-qr-code-payment-gateway', false, dirname( DWU_BASENAME ) . '/languages' );
 	}
 
 	/**
@@ -251,9 +362,9 @@ final class DWU {
 		}
 
 		$more = [
-			'<a href="https://wordpress.org/support/plugin/upi-qr-code-payment-gateway/" target="_blank">' . __( 'Support', 'dew-upi-qr-code' ) . '</a>',
-			'<a href="https://wordpress.org/plugins/upi-qr-code-payment-gateway/#faq" target="_blank">' . __( 'FAQ', 'dew-upi-qr-code' ) . '</a>',
-			// '<a href="https://www.divyeshghediya.in/donate" target="_blank">' . __( 'Donate', 'dew-upi-qr-code' ) . '</a>',
+			'<a href="https://wordpress.org/support/plugin/upi-qr-code-payment-gateway/" target="_blank">' . __( 'Support', 'upi-qr-code-payment-gateway' ) . '</a>',
+			'<a href="https://wordpress.org/plugins/upi-qr-code-payment-gateway/#faq" target="_blank">' . __( 'FAQ', 'upi-qr-code-payment-gateway' ) . '</a>',
+			// '<a href="https://www.divyeshghediya.in/donate" target="_blank">' . __( 'Donate', 'upi-qr-code-payment-gateway' ) . '</a>',
 		];
 
 		return array_merge( $links, $more );
@@ -266,7 +377,7 @@ final class DWU {
 	 * @return array
 	 */
 	public function action_links( $links ) {
-		$links[] = '<a href="' . admin_url( 'admin.php?page=wc-settings&tab=checkout&section=dew-wc-upi' ) . '">' . __( 'Settings', 'dew-upi-qr-code' ) . '</a>';
+		$links[] = '<a href="' . admin_url( 'admin.php?page=wc-settings&tab=checkout&section=dew-wc-upi' ) . '">' . __( 'Settings', 'upi-qr-code-payment-gateway' ) . '</a>';
 
 		return $links;
 	}
@@ -277,6 +388,8 @@ final class DWU {
 	public function declare_compatibility() {
 		if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
 			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', DWU_FILE, true );
+			// The gateway ships its own Checkout block integration (core/blocks/).
+			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'cart_checkout_blocks', DWU_FILE, true );
 		}
 	}
 
@@ -327,8 +440,21 @@ final class DWU {
 		// Check transient, if available display notice
 		if ( get_transient( 'dwu-admin-notice-on-activation' ) ) {
 			?>
-			<div class="notice notice-success">
-				<p><strong><?php printf( __( 'Thanks for installing %1$s v%2$s plugin. Click <a href="%3$s">here</a> to configure plugin settings.', 'dew-upi-qr-code' ), 'UPI QR Code Payment Gateway', DWU_VERSION, admin_url( 'admin.php?page=wc-settings&tab=checkout&section=dew-wc-upi' ) ); ?></strong></p>
+			<div class="notice notice-success is-dismissible">
+				<p><strong>
+				<?php
+				printf(
+					wp_kses(
+						/* translators: 1: Plugin name, 2: Plugin version, 3: Settings page URL */
+						__( 'Thanks for installing %1$s v%2$s plugin. Click <a href="%3$s">here</a> to configure plugin settings.', 'upi-qr-code-payment-gateway' ),
+						[ 'a' => [ 'href' => [] ] ]
+					),
+					'UPI QR Code Payment Gateway',
+					esc_html( DWU_VERSION ),
+					esc_url( admin_url( 'admin.php?page=wc-settings&tab=checkout&section=dew-wc-upi' ) )
+				);
+				?>
+				</strong></p>
 			</div>
 			<?php
 			delete_transient( 'dwu-admin-notice-on-activation' );
@@ -345,34 +471,11 @@ final class DWU {
 			$dismiss   = wp_nonce_url( add_query_arg( 'dwu_notice_action', 'dismiss_rating' ), 'dwu_notice_nonce' );
 			$no_thanks = wp_nonce_url( add_query_arg( 'dwu_notice_action', 'no_thanks_rating' ), 'dwu_notice_nonce' );
 			?>
-			
 			<div class="notice notice-success">
-				<p><?php esc_html_e( 'Hey, I noticed you\'ve been using UPI QR Code Payment Gateway for more than 2 week – that’s awesome! Could you please do me a BIG favor and give it a <strong>5-star</strong> rating on WordPress? Just to help me spread the word and boost my motivation.', 'dew-upi-qr-code' ); ?></p>
-				<p><a href="https://wordpress.org/support/plugin/upi-qr-code-payment-gateway/reviews/?filter=5#new-post" target="_blank" class="button button-secondary"><?php esc_html_e( 'Ok, you deserve it', 'dew-upi-qr-code' ); ?></a>&nbsp;
-				<a href="<?php echo esc_url( $dismiss ); ?>" class="already-did"><strong><?php esc_html_e( 'I already did', 'dew-upi-qr-code' ); ?></strong></a>&nbsp;<strong>|</strong>
-				<a href="<?php echo esc_url( $no_thanks ); ?>" class="later"><strong><?php esc_html_e( 'Nope&#44; maybe later', 'dew-upi-qr-code' ); ?></strong></a></p>
-			</div>
-			<?php
-		}
-
-		$show_donate = false;
-		if ( $this->calculate_time() > strtotime( '-10 days' )
-			|| '1' === get_option( 'dwu_plugin_dismiss_donate_notice' )
-			|| apply_filters( 'dwu_plugin_hide_sticky_donate_notice', false ) ) {
-			$show_donate = false;
-		}
-
-		$show_donate = false;
-		if ( $show_donate ) {
-			$dismiss   = wp_nonce_url( add_query_arg( 'dwu_notice_action', 'dismiss_donate' ), 'dwu_notice_nonce' );
-			$no_thanks = wp_nonce_url( add_query_arg( 'dwu_notice_action', 'no_thanks_donate' ), 'dwu_notice_nonce' );
-			?>
-			
-			<div class="notice notice-success">
-				<p><?php esc_html_e( 'Hey, I noticed you\'ve been using UPI QR Code Payment Gateway for more than 2 week – that’s awesome! If you like UPI QR Code Payment Gateway and you are satisfied with the plugin, isn’t that worth a coffee or two? Please consider donating. Donations help me to continue support and development of this free plugin! Thank you very much!', 'dew-upi-qr-code' ); ?></p>
-				<p><a href="https://www.divyeshghediya.in/donate" target="_blank" class="button button-secondary"><?php esc_html_e( 'Donate Now', 'dew-upi-qr-code' ); ?></a>&nbsp;
-				<a href="<?php echo esc_url( $dismiss ); ?>" class="already-did"><strong><?php esc_html_e( 'I already donated', 'dew-upi-qr-code' ); ?></strong></a>&nbsp;<strong>|</strong>
-				<a href="<?php echo esc_url( $no_thanks ); ?>" class="later"><strong><?php esc_html_e( 'Nope&#44; maybe later', 'dew-upi-qr-code' ); ?></strong></a></p>
+				<p><?php echo wp_kses( __( 'Hey, I noticed you&rsquo;ve been using UPI QR Code Payment Gateway for more than a week &ndash; that&rsquo;s awesome! Could you please do me a BIG favor and leave a <strong>review</strong> on WordPress.org? Just to help me spread the word and boost my motivation.', 'upi-qr-code-payment-gateway' ), [ 'strong' => [] ] ); ?></p>
+				<p><a href="https://wordpress.org/support/plugin/upi-qr-code-payment-gateway/reviews/#new-post" target="_blank" class="button button-secondary"><?php esc_html_e( 'Ok, you deserve it', 'upi-qr-code-payment-gateway' ); ?></a>&nbsp;
+				<a href="<?php echo esc_url( $dismiss ); ?>" class="already-did"><strong><?php esc_html_e( 'I already did', 'upi-qr-code-payment-gateway' ); ?></strong></a>&nbsp;<strong>|</strong>
+				<a href="<?php echo esc_url( $no_thanks ); ?>" class="later"><strong><?php esc_html_e( 'Nope, maybe later', 'upi-qr-code-payment-gateway' ); ?></strong></a></p>
 			</div>
 			<?php
 		}
@@ -385,17 +488,17 @@ final class DWU {
 
 		// Set random priority if not already set
 		if ( empty( $knit_pay_upi_notice_random_priority ) ) {
-			$knit_pay_upi_notice_random_priority = strval( wp_rand( 1, 100 ) );
+			$knit_pay_upi_notice_random_priority = strval( wp_rand( 1, 75 ) );
 			set_transient( 'dwu_plugin_knit_pay_upi_notice_random_priority', $knit_pay_upi_notice_random_priority, WEEK_IN_SECONDS );
 		}
 
 		// Only proceed with VPA check if user was randomly selected
 		if ( '1' === $knit_pay_upi_notice_random_priority ) {
-			$dwu_settings = get_option( 'woocommerce_wc-upi_settings', [] );
+			$dwu_settings = get_option( 'woocommerce_dew-wc-upi_settings', [] );
 			$vpa            = isset( $dwu_settings['vpa'] ) ? sanitize_text_field( $dwu_settings['vpa'] ) : '';
 
 			// Check for specific VPA patterns
-			if ( ! empty( $vpa ) && preg_match( '/^(q.*@ybl|paytmqr.*@paytm)$/i', $vpa ) ) {
+			if ( ! empty( $vpa ) && preg_match( '/^(q.+@ybl|paytm.+@[a-z]+|bharatpe.+@[a-z]+|.+@hdfcbank|.+@freecharge)$/i', $vpa ) ) {
 				$show_knit_pay_upi_notice = true;
 			}
 		}
@@ -417,11 +520,11 @@ final class DWU {
 			?>
 
 			<div class="notice notice-success">
-				<p><strong>UPI QR Code Payment Gateway for WooCommerce</strong> - <?php esc_html_e( 'Exciting News! You no longer have to manually check the payment status of your UPI/QR payments. Knit Pay - UPI plugin can check the payment status automatically for you.', 'dew-upi-qr-code' ); ?></p>
+				<p><strong>UPI QR Code Payment Gateway for WooCommerce</strong> - <?php esc_html_e( 'Exciting News! You no longer have to manually check the payment status of your UPI/QR payments. Knit Pay - UPI plugin can check the payment status automatically for you.', 'upi-qr-code-payment-gateway' ); ?></p>
 				<p>
-					<a href="<?php echo esc_url( admin_url( 'plugin-install.php?s=Knit%2520Pay%2520UPI%2520QR%2520code%2520RapidAPI&tab=search&type=term' ) ); ?>" target="_blank" class="button button-primary"><?php esc_html_e( 'Get it Now', 'dew-upi-qr-code' ); ?></a>&nbsp;
-					<a href="<?php echo esc_url( $no_thanks ); ?>" class="later"><strong><?php esc_html_e( 'Remind Later', 'dew-upi-qr-code' ); ?></strong></a>&nbsp;|
-					<a href="<?php echo esc_url( $dismiss ); ?>" class="already-did"><strong><?php esc_html_e( 'Not interested', 'dew-upi-qr-code' ); ?></strong></a>
+					<a href="<?php echo esc_url( admin_url( 'plugin-install.php?s=Knit%2520Pay%2520UPI%2520QR%2520code%2520RapidAPI&tab=search&type=term' ) ); ?>" target="_blank" class="button button-primary"><?php esc_html_e( 'Get it Now', 'upi-qr-code-payment-gateway' ); ?></a>&nbsp;
+					<a href="<?php echo esc_url( $no_thanks ); ?>" class="later"><strong><?php esc_html_e( 'Remind Later', 'upi-qr-code-payment-gateway' ); ?></strong></a>&nbsp;|
+					<a href="<?php echo esc_url( $dismiss ); ?>" class="already-did"><strong><?php esc_html_e( 'Not interested', 'upi-qr-code-payment-gateway' ); ?></strong></a>
 				</p>
 			</div>
 			<?php
@@ -446,17 +549,21 @@ final class DWU {
 			delete_option( 'dwu_plugin_no_thanks_donate_notice' );
 		}
 
-		if ( ! isset( $_REQUEST['dwu_notice_action'] ) || empty( $_REQUEST['dwu_notice_action'] ) ) {
+		if ( empty( $_REQUEST['dwu_notice_action'] ) || ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
 
 		check_admin_referer( 'dwu_notice_nonce' );
 
-		$notice      = sanitize_text_field( $_REQUEST['dwu_notice_action'] );
+		$notice      = sanitize_key( wp_unslash( $_REQUEST['dwu_notice_action'] ) );
 		$notice      = explode( '_', $notice );
 		$notice_type = end( $notice );
 		array_pop( $notice );
 		$notice_action = join( '_', $notice );
+
+		if ( ! in_array( $notice_type, [ 'rating', 'donate', 'upi' ], true ) ) {
+			return;
+		}
 
 		if ( 'dismiss_knit_pay' === $notice_action ) {
 			// Knit Pay UPI Notice Dismiss.
@@ -480,7 +587,7 @@ final class DWU {
 			}
 		}
 	
-		wp_redirect( remove_query_arg( [ 'dwu_notice_action', '_wpnonce' ] ) );
+		wp_safe_redirect( remove_query_arg( [ 'dwu_notice_action', '_wpnonce' ] ) );
 		exit;
 	}
 
