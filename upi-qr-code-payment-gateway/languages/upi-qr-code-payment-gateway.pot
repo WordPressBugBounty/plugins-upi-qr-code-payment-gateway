@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the UPI QR Code Payment Gateway plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: UPI QR Code Payment Gateway 1.5.0\n"
+"Project-Id-Version: UPI QR Code Payment Gateway 1.5.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/upi-qr-code-payment-gateway\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-11T19:14:05+00:00\n"
+"POT-Creation-Date: 2026-10-11T20:10:56+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: .claude/tools/make-pot.php\n"
 "X-Domain: upi-qr-code-payment-gateway\n"
@@ -605,45 +605,49 @@ msgstr ""
 msgid "FAQ"
 msgstr ""
 
-#: upi-qr-code-payment-gateway.php:380
+#: upi-qr-code-payment-gateway.php:367
+msgid "Leave a review"
+msgstr ""
+
+#: upi-qr-code-payment-gateway.php:381
 msgid "Settings"
 msgstr ""
 
 #. translators: 1: Plugin name, 2: Plugin version, 3: Settings page URL
-#: upi-qr-code-payment-gateway.php:449
+#: upi-qr-code-payment-gateway.php:450
 #, php-format
 msgid "Thanks for installing %1$s v%2$s plugin. Click <a href=\"%3$s\">here</a> to configure plugin settings."
 msgstr ""
 
-#: upi-qr-code-payment-gateway.php:475
+#: upi-qr-code-payment-gateway.php:476
 msgid "Hey, I noticed you&rsquo;ve been using UPI QR Code Payment Gateway for more than a week &ndash; that&rsquo;s awesome! Could you please do me a BIG favor and leave a <strong>review</strong> on WordPress.org? Just to help me spread the word and boost my motivation."
 msgstr ""
 
-#: upi-qr-code-payment-gateway.php:476
+#: upi-qr-code-payment-gateway.php:477
 msgid "Ok, you deserve it"
 msgstr ""
 
-#: upi-qr-code-payment-gateway.php:477
+#: upi-qr-code-payment-gateway.php:478
 msgid "I already did"
 msgstr ""
 
-#: upi-qr-code-payment-gateway.php:478
+#: upi-qr-code-payment-gateway.php:479
 msgid "Nope, maybe later"
 msgstr ""
 
-#: upi-qr-code-payment-gateway.php:523
+#: upi-qr-code-payment-gateway.php:524
 msgid "Exciting News! You no longer have to manually check the payment status of your UPI/QR payments. Knit Pay - UPI plugin can check the payment status automatically for you."
 msgstr ""
 
-#: upi-qr-code-payment-gateway.php:525
+#: upi-qr-code-payment-gateway.php:526
 msgid "Get it Now"
 msgstr ""
 
-#: upi-qr-code-payment-gateway.php:526
+#: upi-qr-code-payment-gateway.php:527
 msgid "Remind Later"
 msgstr ""
 
-#: upi-qr-code-payment-gateway.php:527
+#: upi-qr-code-payment-gateway.php:528
 msgid "Not interested"
 msgstr ""
 
