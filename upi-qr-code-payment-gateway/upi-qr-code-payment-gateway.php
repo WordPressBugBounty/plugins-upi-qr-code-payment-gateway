@@ -3,7 +3,7 @@
  * Plugin Name: UPI QR Code Payment Gateway
  * Plugin URI: http://dewtechnolab.com/project/
  * Description: It enables a WooCommerce site to accept payments through UPI apps like Google Pay, Paytm, AmazonPay, BHIM, PhonePe or any Banking UPI app. Avoid payment gateway charges.
- * Version: 1.5.1
+ * Version: 1.5.2
  * Requires at least: 4.6
  * Requires PHP: 7.4
  * Author: Dew Technolab
@@ -50,7 +50,7 @@ final class DWU {
 	 *
 	 * @var string
 	 */
-	public $version = '1.5.1';
+	public $version = '1.5.2';
 
 	/**
 	 * Minimum version of WordPress required to run DWU.
@@ -266,6 +266,10 @@ final class DWU {
 	 * payment details were already submitted are never cancelled automatically: the merchant
 	 * checks them.
 	 *
+	 * Since 1.5.2 the window counts from when the customer chose UPI (`_dwu_payment_started`, set in
+	 * process_payment()), so an older order paid later by UPI isn't cancelled straight away. Orders
+	 * without it (placed before 1.5.2) count from when they were created, as before.
+	 *
 	 * @param bool     $should_cancel Whether WooCommerce would cancel the order.
 	 * @param WC_Order $order         The unpaid (pending) order.
 	 * @return bool
@@ -292,9 +296,13 @@ final class DWU {
 		 * @param WC_Order $order The unpaid order.
 		 */
 		$hours   = (float) apply_filters( 'dwu_unpaid_order_timeout_hours', $hours, $order );
-		$created = $order->get_date_created();
+		$started = absint( $order->get_meta( '_dwu_payment_started', true ) );
 
-		if ( $hours > 0 && $created && $created->getTimestamp() > time() - (int) ( $hours * HOUR_IN_SECONDS ) ) {
+		if ( ! $started && $order->get_date_created() ) {
+			$started = $order->get_date_created()->getTimestamp();
+		}
+
+		if ( $hours > 0 && $started && $started > time() - (int) ( $hours * HOUR_IN_SECONDS ) ) {
 			// Too early: WooCommerce checks again on its next run.
 			return false;
 		}

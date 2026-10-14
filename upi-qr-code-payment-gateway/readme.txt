@@ -3,7 +3,7 @@
 Contributors: dewtechnolab, dew491212
 Tags: upi, upi payment, upi qr code, payment gateway, woocommerce
 Requires at least: 4.6
-Stable tag: 1.5.1
+Stable tag: 1.5.2
 Tested up to: 7.1
 WC requires at least: 4.0
 WC tested up to: 11.2
@@ -127,6 +127,11 @@ Post detailed information about the issue in the [support forum](https://wordpre
 
 If you like UPI QR Code Payment Gateway, please take a moment to [leave a review](https://wordpress.org/support/plugin/upi-qr-code-payment-gateway/reviews/#new-post). It helps to keep development and support going strong. Thank you!
 
+= 1.5.2 =
+Release Date: October 13, 2026
+
+* Fixed: An older order paid later by UPI (for example from the "Pay for order" page, or after a failed payment) could be cancelled as unpaid within about an hour. The "Unpaid Order Timeout" now counts from when the customer chooses UPI, not from when the order was created.
+
 = 1.5.1 =
 Release Date: October 12, 2026
 
@@ -212,6 +217,9 @@ Release Date: March 14, 2020
 * Initial release.
 
 == Upgrade Notice ==
+
+= 1.5.2 =
+Stops older orders paid later by UPI from being cancelled as unpaid too early.
 
 = 1.5.1 =
 Fixes nearly invisible buttons in the payment popup with some themes.

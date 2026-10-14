@@ -640,6 +640,10 @@ class UPI_WC_Payment_Gateway extends \WC_Payment_Gateway {
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 		$message     = __( 'Awaiting UPI Payment!', 'upi-qr-code-payment-gateway' );
 
+		// The unpaid-order window counts from now, not from when the order was created: the order may be
+		// older (paid later from the "Pay for order" page, or a failed payment retried). Saved with the status.
+		$order->update_meta_data( '_dwu_payment_started', time() );
+
 		// Mark as pending (we're awaiting the payment)
 		$order->update_status( $this->default_status );
 
